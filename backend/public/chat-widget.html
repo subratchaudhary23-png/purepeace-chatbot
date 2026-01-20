@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PurePeace Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: transparent;
+    }
+
+    .chat-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #075e54;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,.3);
+      z-index: 999999;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: red;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 20px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .chat-box {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 320px;
+      height: 450px;
+      background: #ece5dd;
+      border-radius: 10px;
+      overflow: hidden;
+      z-index: 999999;
+      box-shadow: 0 4px 10px rgba(0,0,0,.3);
+
+      transform: translateY(30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-box.open {
+      transform: translateY(0px);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .chat-header {
+      background: #075e54;
+      color: #fff;
+      padding: 10px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .header-title{
+		  font-size: 14px;
+		  font-weight: bold;
+		  display: flex;
+		  align-items: center;
+		  gap: 6px;
+		}
+
+		.bot-icon{
+		  display: inline-flex;
+		  align-items: center;
+		}
+
+
+    .header-subtitle {
+      font-size: 11px;
+      opacity: 0.85;
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 0;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 8px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin: 4px 0;
+      max-width: 80%;
+      font-size: 14px;
+      white-space: pre-line;
+      word-break: break-word;
+      line-height: 1.25;
+    }
+
+    .user {
+      background: #dcf8c6;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background: #fff;
+      align-self: flex-start;
+    }
+
+    .typing {
+      font-style: italic;
+      opacity: 0.7;
+    }
+
+    .chat-footer {
+      display: flex;
+      padding: 6px;
+      background: #f0f0f0;
+      gap: 6px;
+    }
+
+    input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .send-btn {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: none;
+      background: #075e54;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .mini-icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="chat-btn" onclick="toggleChat()" id="chatBtn">
+  <span class="badge" id="badge">0</span>
+
+  <!-- Chat Icon -->
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+    <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"
+      stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+  Chat
+</div>
+
+<div class="chat-box" id="chatBox">
+
+  <div class="chat-header">
+    <div class="header-left">
+      <div class="header-title">
+		  <span class="bot-icon">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+			  <path d="M12 2v2M8 4h8M7 20h10a4 4 0 0 0 4-4v-5a6 6 0 0 0-6-6H9a6 6 0 0 0-6 6v5a4 4 0 0 0 4 4Z"
+				stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			  <path d="M9 13h.01M15 13h.01"
+				stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+			  <path d="M8 17c1.2 1 2.5 1.5 4 1.5s2.8-.5 4-1.5"
+				stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		  </span>
+		  PurePeace Exports
+	 </div>
+
+
+      <div class="header-subtitle">
+        <svg class="mini-icon" viewBox="0 0 24 24" fill="none">
+          <path d="M20 6 9 17l-5-5"
+            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        We reply instantly
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Clear -->
+      <button class="header-btn" onclick="clearChat()" title="Clear Chat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M3 6h18M8 6V4h8v2M6 6l1 16h10l1-16"
+            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <!-- Close -->
+      <button class="header-btn" onclick="closeChat()" aria-label="Close Chat" title="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6 6 18M6 6l12 12"
+            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-body" id="messages"></div>
+
+  <div class="chat-footer">
+    <input id="input" placeholder="Type message..." />
+    <button class="send-btn" onclick="send()">Send</button>
+  </div>
+
+</div>
+
+<script>
+const STORAGE_KEY = "purepeace_chat_history_v1";
+let unreadCount = 0;
+
+function playSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+    gainNode.gain.setValueAtTime(0.05, ctx.currentTime);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.12);
+  } catch (e) {}
+}
+
+function saveChat() {
+  const messages = document.getElementById("messages").innerHTML;
+  localStorage.setItem(STORAGE_KEY, messages);
+}
+
+function loadChat() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    document.getElementById("messages").innerHTML = saved;
+  } else {
+    document.getElementById("messages").innerHTML =
+      `<div class="msg bot">Hello! Welcome to PurePeace Exports.\nType "hi" to start.</div>`;
+  }
+}
+
+function clearChat() {
+  // ? clear chat UI + saved chat history
+  localStorage.removeItem(STORAGE_KEY);
+
+  // ? clear lead session id (IMPORTANT)
+  localStorage.removeItem("pp_session_id");
+
+  // ? reset unread badge
+  unreadCount = 0;
+  updateBadge();
+
+  // ? show welcome message
+  document.getElementById("messages").innerHTML =
+    `<div class="msg bot">Hello! Welcome to PurePeace Exports.\nType "hi" to start.</div>`;
+
+  saveChat();
+}
+
+
+function updateBadge() {
+  const badge = document.getElementById("badge");
+  if (unreadCount > 0) {
+    badge.style.display = "block";
+    badge.innerText = unreadCount;
+  } else {
+    badge.style.display = "none";
+  }
+}
+
+function toggleChat() {
+  const box = document.getElementById("chatBox");
+
+  if (box.classList.contains("open")) {
+    closeChat();
+  } else {
+    box.classList.add("open");
+    unreadCount = 0;
+    updateBadge();
+
+    setTimeout(() => {
+      document.getElementById("input").focus();
+    }, 150);
+  }
+}
+
+function closeChat() {
+  document.getElementById("chatBox").classList.remove("open");
+}
+
+async function send() {
+  const input = document.getElementById("input");
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const messages = document.getElementById("messages");
+
+  // ? user message (NO TIME)
+  messages.innerHTML += `<div class="msg user">${msg}</div>`;
+  input.value = "";
+  messages.scrollTop = messages.scrollHeight;
+  saveChat();
+
+  // ? typing loader
+  const typingId = "typing-" + Date.now();
+  messages.innerHTML += `<div class="msg bot typing" id="${typingId}">Typing...</div>`;
+  messages.scrollTop = messages.scrollHeight;
+
+  // ? sessionId (important for lead steps)
+  let sessionId = localStorage.getItem("pp_session_id");
+  if (!sessionId) {
+    sessionId = "pp_" + Date.now() + "_" + Math.random().toString(16).slice(2);
+    localStorage.setItem("pp_session_id", sessionId);
+  }
+
+  try {
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: msg, sessionId })
+    });
+
+    const data = await res.json();
+
+    // ? remove typing
+    const typingDiv = document.getElementById(typingId);
+    if (typingDiv) typingDiv.remove();
+
+    // ? bot reply (NO TIME)
+    messages.innerHTML += `<div class="msg bot">${data.reply}</div>`;
+    messages.scrollTop = messages.scrollHeight;
+
+    saveChat();
+    playSound();
+
+    const box = document.getElementById("chatBox");
+    if (!box.classList.contains("open")) {
+      unreadCount++;
+      updateBadge();
+    }
+  } catch (err) {
+    const typingDiv = document.getElementById(typingId);
+    if (typingDiv) typingDiv.remove();
+
+    messages.innerHTML += `<div class="msg bot">Server error. Please try again.</div>`;
+    messages.scrollTop = messages.scrollHeight;
+    saveChat();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadChat();
+
+  const input = document.getElementById("input");
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") send();
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+ai-chatbot/
+¦
++-- backend/
+¦   +-- server.js
+¦   +-- package.json
+¦   +-- .env
+¦
++-- frontend/
+    +-- index.html
+
+
+subratchaudhary23_db_user
+xjARkWMIWNL0DeOo
+
+MONGO_URI=mongodb+srv://subratchaudhary23_db_user:xjARkWMIWNL0DeOo@chatbot-cluster.rrijsiz.mongodb.net/?appName=chatbot-cluster
+
+npm install express cors dotenv openai
+npm install mongoose
+npm install json2csv
+
+
+Reactapp for admin 
+
+admin-ui/
+ +- src/
+ ¦   +- App.js
+ ¦   +- AdminLeads.js
+ ¦   +- index.js
+ +- package.json
+
+=============
+
+ai-chatbot
+ +-- backend
+ ¦   +-- server.js
+ ¦   +-- db.js
+ ¦   +-- models
+ ¦   +-- .env
+ ¦
+ +-- admin-ui   (React app)
+
+ ==============================
+
+ ai-chatbot
+ +-- backend        ? API + AI + MongoDB
+ ¦   +-- server.js
+ ¦   +-- db.js
+ ¦   +-- models/
+ ¦   +-- .env
+ ¦
+ +-- admin-ui       ? React app (Admin + Chat UI)
+
+
+admin-ui/src/
+ +-- App.js
+ +-- AdminLeads.js
+ +-- pages/
+     +-- Chat.jsx
+++++=================================
+
+Real whatsup intergigtion
+
+WhatsApp User
+   ?
+Meta Webhook ? /webhook
+   ?
+Your Chat Logic (/chat reused)
+   ?
+OpenAI
+   ?
+WhatsApp Send API
+

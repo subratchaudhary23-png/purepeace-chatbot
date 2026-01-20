@@ -1,0 +1,185 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import path from "path";
+import { fileURLToPath } from "url";
+import { Parser } from "json2csv";
+
+import companyData from "./companyData.js";
+import connectDB from "./db.js";
+import Lead from "./models/Lead.js";
+
+
+
+
+
+dotenv.config();
+connectDB();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Fix __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// In-memory session store
+const userSessions = {};
+const greetings = ["hi", "hello", "hey", "hii", "hai"];
+
+/* =========================
+   CHATBOT API
+   ========================= */
+app.post("/chat", async (req, res) => {
+  try {
+    const { message, sessionId } = req.body;
+    const userId = sessionId || req.ip;
+
+    if (!message) {
+      return res.json({ reply: "Please type a message." });
+    }
+
+    if (!userSessions[userId]) {
+      userSessions[userId] = { step: 0, lead: {} };
+    }
+
+    const session = userSessions[userId];
+    const text = message.trim();
+
+    // STEP 0: Greeting / Name
+    if (session.step === 0) {
+      if (greetings.includes(text.toLowerCase())) {
+        return res.json({
+          reply:
+            "May I know your name?",
+        });
+      }
+
+      session.lead.name = text;
+      session.step = 1;
+      return res.json({
+        reply: `Nice to meet you, ${text}! Which country are you from?`,
+      });
+    }
+
+    // STEP 1: Country
+    if (session.step === 1) {
+      session.lead.country = text;
+      session.step = 2;
+      return res.json({
+        reply:
+          "Thank you. Please share your email or phone number so our sales team can contact you.",
+      });
+    }
+
+    // STEP 2: Contact
+    if (session.step === 2) {
+      session.lead.contact = text;
+      session.step = 3;
+
+      const existingLead = await Lead.findOne({ contact: text });
+
+      if (!existingLead) {
+        await Lead.create(session.lead);
+        console.log("?? NEW LEAD SAVED:", session.lead);
+      }
+
+      return res.json({
+        reply:
+          "Thank you! Our sales team will contact you soon.\nHow can I help you with our products?",
+      });
+    }
+
+    // STEP 3: AI Business Chat
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `
+You are a professional business assistant for PurePeace Exports.
+
+STRICT RULES:
+- Answer ONLY using the company information.
+- Be short, direct, and professional.
+- DO NOT greet again (no "Hello", "Welcome", "Hi") after the lead is collected.
+- DO NOT repeat introduction lines like "How can I help you today?"
+- If user asks about products, reply directly with product details.
+- If user asks about price, reply with clear pricing (currency + MOQ if available).
+- If information is missing, reply exactly:
+  "Please contact our sales team."
+
+
+Company Information:
+${companyData}
+          `,
+        },
+        { role: "user", content: text },
+      ],
+    });
+
+    res.json({ reply: completion.choices[0].message.content });
+  } catch (error) {
+    console.error("? Chat Error:", error.message);
+    res.status(500).json({ reply: "Server error. Please try again later." });
+  }
+});
+
+/* =========================
+   ADMIN: GET LEADS
+   ========================= */
+app.get("/admin/leads", async (req, res) => {
+  if (req.headers["x-admin-key"] !== process.env.ADMIN_API_KEY) {
+    return res.status(401).json({ error: "Unauthorized access" });
+  }
+
+  const leads = await Lead.find().sort({ createdAt: -1 });
+  res.json({ total: leads.length, leads });
+});
+
+/* =========================
+   ADMIN: EXPORT CSV
+   ========================= */
+app.get("/admin/leads/export", async (req, res) => {
+  if (req.headers["x-admin-key"] !== process.env.ADMIN_API_KEY) {
+    return res.status(401).json({ error: "Unauthorized access" });
+  }
+
+  const leads = await Lead.find().sort({ createdAt: -1 });
+
+  const parser = new Parser({
+    fields: ["name", "country", "contact", "createdAt"],
+  });
+
+  const csv = parser.parse(leads);
+
+  res.header("Content-Type", "text/csv");
+  res.attachment("leads.csv");
+  res.send(csv);
+});
+
+/* =========================
+   SERVE REACT (PRODUCTION)
+   ========================= */
+app.use(express.static(path.join(__dirname, "../../admin-ui/build")));
+
+app.use((req, res) => {
+  res.sendFile(
+    path.join(__dirname, "../../admin-ui/build/index.html")
+  );
+});
+
+
+/* =========================
+   START SERVER (LAST)
+   ========================= */
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`? Server running on port ${process.env.PORT || 3000}`);
+});

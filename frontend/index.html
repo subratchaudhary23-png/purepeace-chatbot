@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PurePeace Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #ece5dd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .chat-container {
+      width: 400px;
+      max-width: 95%;
+      height: 600px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 10px #aaa;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #075e54;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      max-width: 70%;
+      margin: 5px 0;
+      padding: 8px 12px;
+      border-radius: 15px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .user {
+      background: #dcf8c6;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background: white;
+      align-self: flex-start;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 8px;
+      background: #f0f0f0;
+      border-top: 1px solid #ccc;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .chat-input button {
+      margin-left: 8px;
+      padding: 10px 16px;
+      background: #075e54;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    /* Smooth scrolling */
+    .chat-body {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="chat-header">PurePeace Chat</div>
+    <div class="chat-body" id="messages"></div>
+    <div class="chat-input">
+      <input id="input" placeholder="Type a message..." />
+      <button onclick="send()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const messagesEl = document.getElementById("messages");
+    const inputEl = document.getElementById("input");
+
+    async function send() {
+      const msg = inputEl.value.trim();
+      if (!msg) return;
+
+      addMessage(msg, "user");
+      inputEl.value = "";
+
+      try {
+        const res = await fetch("http://localhost:3000/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg }),
+        });
+
+        const data = await res.json();
+        addMessage(data.reply, "bot");
+      } catch (err) {
+        addMessage("Error connecting to server.", "bot");
+      }
+    }
+
+    function addMessage(text, sender) {
+      const msgEl = document.createElement("div");
+      msgEl.classList.add("message", sender);
+      msgEl.textContent = text;
+      messagesEl.appendChild(msgEl);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    // Send message on Enter key
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") send();
+    });
+  </script>
+
+</body>
+</html>

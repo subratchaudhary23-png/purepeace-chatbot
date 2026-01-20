@@ -1,0 +1,32 @@
+const companyData = `
+Company Name: PurePeace Exports
+Location: Kolkata, India
+
+Business:
+We manufacture and export incense sticks (agarbatti).
+
+Products:
+- Premium incense sticks
+- Floral fragrances
+- Herbal fragrances
+- Custom private labeling available
+
+Pricing:
+- Minimum order: 500 kg
+- Price range: ?120 – ?180 per kg (depends on fragrance & packaging)
+
+Export Countries:
+UAE, Bangladesh, Malaysia, Indonesia
+
+Shipping:
+- FOB & CIF available
+- Packing: Export quality cartons
+
+Payment Terms:
+- Advance payment
+- LC for bulk orders
+
+Contact:
+Email: sales@purepeaceexports.com
+`;
+export default companyData;

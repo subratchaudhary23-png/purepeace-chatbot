@@ -1,0 +1,27 @@
+import mongoose from "mongoose";
+
+const leadSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    contact: {
+      type: String,
+      required: true,
+      unique: true, // ?? prevent duplicates
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Lead = mongoose.model("Lead", leadSchema);
+
+export default Lead;
+import { Parser } from "json2csv";
