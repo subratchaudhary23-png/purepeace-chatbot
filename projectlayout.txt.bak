@@ -56,4 +56,17 @@ admin-ui/src/
  +-- AdminLeads.js
  +-- pages/
      +-- Chat.jsx
+++++=================================
+
+Real whatsup intergigtion
+
+WhatsApp User
+   ?
+Meta Webhook ? /webhook
+   ?
+Your Chat Logic (/chat reused)
+   ?
+OpenAI
+   ?
+WhatsApp Send API
 
