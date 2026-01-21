@@ -70,3 +70,11 @@ OpenAI
    ?
 WhatsApp Send API
 
+
+
+git config --global user.name "Subrat Chaudhary"
+git config --global user.email "subratchaudhary23@gmail.com"
+
+git branch -M main
+git remote add origin https://github.com/subratchaudhary23-png/purepeace-chatbot.git
+git push -u origin main
