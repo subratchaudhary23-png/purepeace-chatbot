@@ -7,8 +7,6 @@ function App() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>PurePeace Exports  Admin Panel</h2>
-
       {/* Pages */}
       {page === "leads" && <AdminLeads />}
       </div>
