@@ -7,25 +7,11 @@ function App() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>PurePeace Exports – Admin Panel</h2>
-
-      {/* Navigation */}
-      <div style={{ marginBottom: 20 }}>
-        <button onClick={() => setPage("leads")}>
-          ?? View Leads
-        </button>
-        <button
-          onClick={() => setPage("chat")}
-          style={{ marginLeft: 10 }}
-        >
-          ?? Chatbot
-        </button>
-      </div>
+      <h2>PurePeace Exports  Admin Panel</h2>
 
       {/* Pages */}
       {page === "leads" && <AdminLeads />}
-      {page === "chat" && <Chat />}
-    </div>
+      </div>
   );
 }
 

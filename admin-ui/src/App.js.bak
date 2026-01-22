@@ -1,16 +1,19 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Leads from "./pages/Leads";
+import { useState } from "react";
+import AdminLeads from "./AdminLeads";
 import Chat from "./pages/Chat";
 
 function App() {
+  const [page, setPage] = useState("leads");
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/admin/leads" element={<Leads />} />
-        <Route path="/admin/chat" element={<Chat />} />
-      </Routes>
-    </BrowserRouter>
+    <div style={{ padding: 20 }}>
+      <h2>PurePeace Exports – Admin Panel</h2>
+
+      {/* Pages */}
+      {page === "leads" && <AdminLeads />}
+      </div>
   );
 }
 
 export default App;
+
