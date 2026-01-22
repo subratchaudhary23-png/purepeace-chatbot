@@ -445,13 +445,15 @@ const styles = {
     fontWeight: 600,
   },
   logoutBtn: {
-    padding: "10px 14px",
-    borderRadius: 10,
-    border: "1px solid #ddd",
-    background: "white",
-    cursor: "pointer",
-    fontWeight: 600,
-  },
+	  padding: "10px 14px",
+	  borderRadius: 10,
+	  border: "none",
+	  background: "#d9534f",   // ? red
+	  color: "white",
+	  cursor: "pointer",
+	  fontWeight: 700,
+	},
+
   tableWrap: {
     marginTop: 16,
     borderRadius: 12,
