@@ -275,42 +275,65 @@ function AdminLeads() {
 
         {/* Pagination */}
         <div style={styles.paginationRow}>
-          <button
-            style={styles.pageBtn}
-            disabled={currentPage === 1}
-            onClick={() => setPage(1)}
-          >
-            ? First
-          </button>
+	  <button
+		style={styles.pageBtn}
+		disabled={currentPage === 1}
+		onClick={() => setPage(1)}
+	  >
+		<span style={styles.btnIcon}>
+		  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+			<path d="M19 6 13 12l6 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+			<path d="M11 6 5 12l6 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+		  </svg>
+		</span>
+		First
+	  </button>
 
-          <button
-            style={styles.pageBtn}
-            disabled={currentPage === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            ? Prev
-          </button>
+	  <button
+		style={styles.pageBtn}
+		disabled={currentPage === 1}
+		onClick={() => setPage((p) => Math.max(1, p - 1))}
+	  >
+		<span style={styles.btnIcon}>
+		  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+			<path d="M15 18 9 12l6-6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+		  </svg>
+		</span>
+		Prev
+	  </button>
 
-          <div style={{ fontSize: 14, color: "#333" }}>
-            Page <b>{currentPage}</b> of <b>{totalPages}</b>
-          </div>
+	  <div style={{ fontSize: 14, color: "#333" }}>
+		Page <b>{currentPage}</b> of <b>{totalPages}</b>
+	  </div>
 
-          <button
-            style={styles.pageBtn}
-            disabled={currentPage === totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            Next ?
-          </button>
+	  <button
+		style={styles.pageBtn}
+		disabled={currentPage === totalPages}
+		onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+	  >
+		Next
+		<span style={styles.btnIcon}>
+		  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+			<path d="M9 6l6 6-6 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+		  </svg>
+		</span>
+	  </button>
 
-          <button
-            style={styles.pageBtn}
-            disabled={currentPage === totalPages}
-            onClick={() => setPage(totalPages)}
-          >
-            Last ?
-          </button>
-        </div>
+	  <button
+		style={styles.pageBtn}
+		disabled={currentPage === totalPages}
+		onClick={() => setPage(totalPages)}
+	  >
+		Last
+		<span style={styles.btnIcon}>
+		  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+			<path d="M5 6l6 6-6 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+			<path d="M13 6l6 6-6 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+		  </svg>
+		</span>
+	  </button>
+	</div>
+
       </div>
     </div>
   );
@@ -481,6 +504,13 @@ const styles = {
     cursor: "pointer",
     fontWeight: 600,
   },
+  btnIcon: {
+	  display: "inline-flex",
+	  alignItems: "center",
+	  justifyContent: "center",
+	  marginRight: 6,
+	  marginLeft: 6,
+	},
 };
 
 export default AdminLeads;
