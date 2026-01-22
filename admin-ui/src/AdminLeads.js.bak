@@ -1,0 +1,71 @@
+import { useEffect, useState } from "react";
+
+const ADMIN_KEY = "admin123";
+
+function AdminLeads() {
+  const [leads, setLeads] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch(fetch("https://purepeace-chatbot.onrender.com/admin/leads", ...)
+       , {
+      headers: {
+        "x-admin-key": ADMIN_KEY,
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.leads) setLeads(data.leads);
+        else setError("Unauthorized");
+      })
+      .catch(() => setError("Server error"));
+  }, []);
+
+  const downloadCSV = () => {
+    fetch(window.open("https://purepeace-chatbot.onrender.com/admin/leads/export")
+      , {
+      headers: {
+        "x-admin-key": ADMIN_KEY,
+      },
+    })
+      .then(res => res.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "leads.csv";
+        a.click();
+      });
+  };
+
+  return (
+    <div>
+      <button onClick={downloadCSV}>? Download CSV</button>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <table border="1" cellPadding="8" style={{ marginTop: 20 }}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Country</th>
+            <th>Contact</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {leads.map(lead => (
+            <tr key={lead._id}>
+              <td>{lead.name}</td>
+              <td>{lead.country}</td>
+              <td>{lead.contact}</td>
+              <td>{new Date(lead.createdAt).toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default AdminLeads;
